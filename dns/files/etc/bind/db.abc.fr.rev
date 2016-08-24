@@ -1,0 +1,17 @@
+; This file has been installed with Ansible
+; Do not manually update this file
+;
+$TTL    907200 ; 1 week 3 days 12 hours
+@ IN SOA dns01.abc.fr nicolas.abc.fr. (
+	2016072602
+	8H
+	2H
+	1W
+	1D )
+;
+@ IN NS	dns01.
+;
+10	IN PTR	dns01.abc.fr.
+100	IN PTR	workstation01.abc.fr.
+101	IN PTR	poste01.abc.fr.
+	IN PTR	abc.fr.

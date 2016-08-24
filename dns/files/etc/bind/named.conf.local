@@ -1,0 +1,17 @@
+// This file has been installed with Ansible
+// Do not update this file manually
+
+include "/etc/bind/rndc.key";
+
+zone "abc.fr"{
+        type master;
+        file "/etc/bind/db.abc.fr";
+	allow-update { key rndc-key; };
+};
+
+
+zone "0.168.192.in-addr.arpa" {
+	type master;
+	file "/etc/bind/db.abc.fr.rev";
+	allow-update { key rndc-key; };
+};

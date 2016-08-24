@@ -1,0 +1,11 @@
+---
+- name: Configure DNS server
+  hosts: dnsservers
+  gather_facts: no
+  sudo_user: root
+  sudo: true
+  tasks:
+
+    - name: update /etc/sysctl.conf
+      lineinfile: dest=/etc/sysctl.conf backrefs=yes regexp='#net\.ipv4\.ip_forward=1' line='net.ipv4.ip_forward=1'
+

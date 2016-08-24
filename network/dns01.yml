@@ -1,0 +1,32 @@
+---
+- name: Configure NIC dns01 server
+  hosts: dnsservers
+  gather_facts: no
+  sudo_user: root
+  sudo: true
+
+  tasks:
+
+    - name: rename hostname
+      shell: hostnamectl set-hostname dns01.abc.fr
+
+    - name: copy /etc/hosts
+      copy: src=files/etc/hosts dest=/etc/hosts owner=root group=root mode=644
+
+    - name: copy /etc/network/interfaces
+      copy: src=files/etc/network/interfaces dest=/etc/network/interfaces owner=root group=root mode=644
+
+    - name: copy /etc/iptables.rules
+      #http://www.linuxreport.org/quick-guide-build-a-router-for-your-home-network-with-debian-linux/
+      copy: src=files/etc/iptables.rules dest=/etc/iptables.rules owner=root group=root mode=644
+
+    - name: update /etc/sysctl.conf (port forwarding)
+      lineinfile: dest=/etc/sysctl.conf backrefs=yes regexp='#net\.ipv4\.ip_forward=1' line='net.ipv4.ip_forward=1'
+
+    - name: load net.ipv4.ip_forward=1 (port forwarding)
+      command: sysctl -p
+
+    - name: restart networking
+      service: 
+        name: networking
+        state: restarted
