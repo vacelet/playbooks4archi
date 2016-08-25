@@ -1,0 +1,32 @@
+---
+- name: Configure DHCP server
+  hosts: dnsservers
+  gather_facts: no
+  sudo_user: root
+  sudo: true
+
+  #https://blog.bigdinosaur.org/running-bind9-and-isc-dhcp/
+  
+  tasks:
+
+    - name: install dhcp
+      apt: 
+        name: "{{ item }}"
+        state: installed 
+      with_items:
+      - isc-dhcp-server
+      notify: restart isc-dhcp-server
+
+    - name: copy /etc/dhcp/dhcpd.conf
+      copy: src=files/etc/dhcp/dhcpd.conf dest=/etc/dhcp/dhcpd.conf owner=root group=bind mode=644
+      notify: restart isc-dhcp-server
+
+    - name: create db.abc.fr in /etc/bind
+      shell: cp /etc/bind/rndc.key /etc/dhcp/rndc.key
+      notify: restart isc-dhcp-server
+
+  handlers:
+    - name: restart isc-dhcp-server
+      service: 
+        name: isc-dhcp-server
+        state: restarted 
